@@ -1,6 +1,6 @@
 class ArticlesController < ApplicationController
 
-	# get the chromedriver
+	# get the chromedriver for development
 	# chromedriver_path = File.join(File.absolute_path('../..', File.dirname(__FILE__)),"chromedriver")
 	# Selenium::WebDriver::Chrome.driver_path = chromedriver_path
 	# our browser variable
@@ -81,10 +81,14 @@ class ArticlesController < ApplicationController
 			title=((a.div(:class => "section-inner sectionLayout--insetColumn")).h3.text)
 			date=(a.time().text)
 			article_link = a.a(:class => "button button--smaller button--chromeless u-baseColor--buttonNormal")
-			article_link.click(:command, :shift)
-			@@browser.windows.last.use
 
-			@@browser.ps().each do |para|
+			browser_inner = Watir::Browser.new :chrome
+			browser_inner.goto(article_link.href)
+			# article_link.click(:command, :shift)
+			# @@browser.windows.last.use
+
+			# @@browser.ps().each do |para|
+			browser_inner.ps().each do |para|
 				content.append(para.text)
 			end	
 
@@ -98,7 +102,8 @@ class ArticlesController < ApplicationController
 				)
 
 			# store tags related to that article
-			@@browser.as(:href, /tag/).each do |tag|
+			# @@browser.as(:href, /tag/).each do |tag|
+			browser_inner.as(:href, /tag/).each do |tag|
 				Tag.create(
 					article_id: article.id,
 					tagname: tag.text
@@ -106,13 +111,14 @@ class ArticlesController < ApplicationController
 			end
 
 			# store responses of that article
-			@@browser.as(href: /responses/).each do |res|
-				@@browser.goto(res.href)
+			# @@browser.as(href: /responses/).each do |res|
+			browser_inner.as(href: /responses/).each do |res|
+				browser_inner.goto(res.href)
 				sleep(0.7)
-				@@browser.send_keys :control, :end
+				browser_inner.send_keys :control, :end
 				
 				
-				@@browser.ps(:class => "graf graf--p graf--leading graf--trailing").each do |resp|
+				browser_inner.ps(:class => "graf graf--p graf--leading graf--trailing").each do |resp|
 					Response.create(
 						article_id: article.id,
 						responseContent: resp.text
@@ -123,9 +129,12 @@ class ArticlesController < ApplicationController
 			
 			session[:count] = session[:count]+1
 			session[:last_inserted] = session[:last_inserted] + 1
-			@@browser.windows.last.close
+			# @@browser.windows.last.close
+			browser_inner.close
 			# @@browser.back
 		end
+		@@browser.send_keys :control, :end
+		sleep(0.7)
 	end
 	
 end
