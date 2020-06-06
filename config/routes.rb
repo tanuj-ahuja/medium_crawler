@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   
-	root to: 'crawller#index'
+	root to: 'articles#new'
 	post '/next', to: 'articles#next'
 	# post '/create', to: 'articles#create'
 	# get '/next', to: 'articles#index'
