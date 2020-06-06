@@ -1,0 +1,11 @@
+<% @articles.first(10).each do |article| %>
+	<%= article.name %>
+	<%= article.title %>
+	<%= article.date %>
+	<%= article.time %>
+	<br>
+	
+<% end %>
+<%= @tag %>
+<%= @c %>
+<%= @responses %>

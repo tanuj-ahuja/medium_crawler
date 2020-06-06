@@ -1,0 +1,10 @@
+Rails.application.routes.draw do
+  
+	root to: 'crawller#index'
+	post '/next', to: 'articles#next'
+	# post '/create', to: 'articles#create'
+	# get '/next', to: 'articles#index'
+	resources :articles
+
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+end

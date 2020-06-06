@@ -1,0 +1,16 @@
+<h1>Show</h1>
+<p>Name       <%= @article.name %></p><br>
+<p>Title      <%= @article.title %></p><br>
+<p>Date       <%= @article.date %></p><br>
+<p>Time       <%= @article.time %></p><br>
+<p>Content    <%= @article.content %></p><br>
+<h2>Tags</h2>
+<% @article.tags.each do |tag| %>
+	<%= link_to tag.tagname, articles_path(:search => tag.tagname), :method => :post %>
+	<br>
+<% end %>
+<h2>Comments</h2>
+<% @article.responses.each do |resp| %>
+	<%= resp.responseContent %>
+	<br>
+<% end %>

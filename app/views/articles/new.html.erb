@@ -1,0 +1,5 @@
+<h1>Enter Tag</h1>
+<%= form_tag({action: "create"}, :method => "post", id: "search-form") do %>
+	<%= text_field_tag :search, params[:search], placeholder: "Seach Tag" %>
+	<%= submit_tag "Search", :name => nil %>
+<% end %>
