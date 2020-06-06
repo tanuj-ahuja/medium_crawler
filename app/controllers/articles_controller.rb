@@ -41,7 +41,7 @@ class ArticlesController < ApplicationController
 	def create
 		# get start time
 		start_time = Time.now.getutc
-		@@browser=Watir::Browser.new :firefox
+		@@browser=Watir::Browser.new :phantomjs
 
 		if params[:search]
 			tag=params[:search]
@@ -82,7 +82,7 @@ class ArticlesController < ApplicationController
 			date=(a.time().text)
 			article_link = a.a(:class => "button button--smaller button--chromeless u-baseColor--buttonNormal")
 
-			browser_inner = Watir::Browser.new :firefox
+			browser_inner = Watir::Browser.new :phantomjs
 			browser_inner.goto(article_link.href)
 			# article_link.click(:command, :shift)
 			# @@browser.windows.last.use
