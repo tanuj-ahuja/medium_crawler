@@ -2,8 +2,8 @@ class GetMediumDataJob < ApplicationJob
   	queue_as :default
 
   	# get the chromedriver for development
-	chromedriver_path = File.join(File.absolute_path('../..', File.dirname(__FILE__)),"chromedriver")
-	Selenium::WebDriver::Chrome.driver_path = chromedriver_path
+	# chromedriver_path = File.join(File.absolute_path('../..', File.dirname(__FILE__)),"chromedriver")
+	# Selenium::WebDriver::Chrome.driver_path = chromedriver_path
 	# our browser variable
 	# @browser = nil
 	# time to crawl
