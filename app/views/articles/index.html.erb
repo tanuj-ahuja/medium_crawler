@@ -1,5 +1,5 @@
 <h1>Articles</h1>
-
+<h1><%= @tag %></h1>
 <table class="table table-bordered table-striped table-hover">
  <tr>
  	<th>Author</th>
@@ -23,10 +23,10 @@
 
 </table>
 
-<%= link_to 'Next 10', next_path ,  :method => :post %><br/><br/>
+<%= link_to 'Next 10', next_path(:search => @tag) ,  :method => :post %><br/><br/>
 <h2>History</h2>
 <% @history.each do |hist| %>
 	<%= hist.searchtag %>
 	<br>
 <% end %>
-<h3>Time Taken - </h3>><%= @tttc %>
+<h3>Time Taken - </h3><%= @tttc %>

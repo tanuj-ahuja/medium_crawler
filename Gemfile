@@ -7,6 +7,8 @@ end
 
 gem 'phantomjs'
 gem 'selenium-webdriver', '~> 3.6.0'
+gem 'delayed_job_active_record'
+
 
 
 ruby '2.4.0'

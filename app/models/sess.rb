@@ -1,0 +1,2 @@
+class Sess < ApplicationRecord
+end
