@@ -1,8 +1,8 @@
 class ArticlesController < ApplicationController
 
 	# get the chromedriver for development
-	# chromedriver_path = File.join(File.absolute_path('../..', File.dirname(__FILE__)),"chromedriver")
-	# Selenium::WebDriver::Chrome.driver_path = chromedriver_path
+	chromedriver_path = File.join(File.absolute_path('../..', File.dirname(__FILE__)),"chromedriver")
+	Selenium::WebDriver::Chrome.driver_path = chromedriver_path
 	# our browser variable
 	@@browser = nil
 	# time to crawl
@@ -29,8 +29,15 @@ class ArticlesController < ApplicationController
 	# get next 10 articles for a particular tag
 	def next
 		# scroll the browser down to load next 10 articles
-		@@browser.send_keys :control, :end
-		sleep(0.7)
+		prev=0
+		while @@browser.divs(:class => "cardChromeless u-marginTop20 u-paddingTop10 u-paddingBottom15 u-paddingLeft20 u-paddingRight20").length<=session[:count]
+			if prev==@@browser.divs(:class => "cardChromeless u-marginTop20 u-paddingTop10 u-paddingBottom15 u-paddingLeft20 u-paddingRight20").length
+				break
+			end
+			prev=@@browser.divs(:class => "cardChromeless u-marginTop20 u-paddingTop10 u-paddingBottom15 u-paddingLeft20 u-paddingRight20").length
+			@@browser.send_keys :control, :end
+			sleep(2)
+		end
 		# session variable to store the number of articles inserted during latest crawl
 		session[:last_inserted] = 0
 		crawl
@@ -41,7 +48,9 @@ class ArticlesController < ApplicationController
 	def create
 		# get start time
 		start_time = Time.now.getutc
-		@@browser=Watir::Browser.new :phantomjs
+		if @@browser==nil
+			@@browser=Watir::Browser.new :chrome
+		end
 
 		if params[:search]
 			tag=params[:search]
@@ -71,8 +80,14 @@ class ArticlesController < ApplicationController
 		if @divs.length<=session[:count]
 			return
 		end
-		@divs[session[:count]..-1].each do |a|
-			
+		loop_var=session[:count]
+		len=@divs.length
+		@divs[loop_var..loop_var+len].each do |a|
+
+			while a.present? == false
+				@@browser.send_keys :control, :end
+				sleep(2)
+			end
 
 			# get details for each article
 			content=[]
@@ -82,13 +97,13 @@ class ArticlesController < ApplicationController
 			date=(a.time().text)
 			article_link = a.a(:class => "button button--smaller button--chromeless u-baseColor--buttonNormal")
 
-			browser_inner = Watir::Browser.new :phantomjs
-			browser_inner.goto(article_link.href)
-			# article_link.click(:command, :shift)
+			# browser_inner = Watir::Browser.new :chrome
+			# browser_inner.goto(article_link.href)
+			article_link.click
 			# @@browser.windows.last.use
 
-			# @@browser.ps().each do |para|
-			browser_inner.ps().each do |para|
+			@@browser.ps().each do |para|
+			# browser_inner.ps().each do |para|
 				content.append(para.text)
 			end	
 
@@ -102,8 +117,8 @@ class ArticlesController < ApplicationController
 				)
 
 			# store tags related to that article
-			# @@browser.as(:href, /tag/).each do |tag|
-			browser_inner.as(:href, /tag/).each do |tag|
+			@@browser.as(:href, /tag/).each do |tag|
+			# browser_inner.as(:href, /tag/).each do |tag|
 				Tag.create(
 					article_id: article.id,
 					tagname: tag.text
@@ -111,30 +126,32 @@ class ArticlesController < ApplicationController
 			end
 
 			# store responses of that article
-			# @@browser.as(href: /responses/).each do |res|
-			browser_inner.as(href: /responses/).each do |res|
-				browser_inner.goto(res.href)
+			@@browser.as(href: /responses/).each do |res|
+			# browser_inner.as(href: /responses/).each do |res|
+				@@browser.goto(res.href)
 				sleep(0.7)
-				browser_inner.send_keys :control, :end
+				@@browser.send_keys :control, :end
 				
 				
-				browser_inner.ps(:class => "graf graf--p graf--leading graf--trailing").each do |resp|
+				@@browser.ps(:class => "graf graf--p graf--leading graf--trailing").each do |resp|
 					Response.create(
 						article_id: article.id,
 						responseContent: resp.text
 						)
 				end	
+				@@browser.back
 			end		
-
 			
+			
+			@@browser.back
+			@@browser.cookies.clear
+
+
+
 			session[:count] = session[:count]+1
 			session[:last_inserted] = session[:last_inserted] + 1
-			# @@browser.windows.last.close
-			browser_inner.close
-			# @@browser.back
+			
 		end
-		@@browser.send_keys :control, :end
-		sleep(0.7)
 	end
 	
 end
