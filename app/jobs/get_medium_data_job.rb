@@ -13,7 +13,7 @@ class GetMediumDataJob < ApplicationJob
 	# Do something later 1
 		count = Sess.find_by_variable("count").value.to_i
 		last_inserted = Sess.find_by_variable("last_inserted").value.to_i
-		@browser=Watir::Browser.new :chrome
+		@browser=Watir::Browser.new :chrome, , args: %w[--headless --no-sandbox --disable-dev-shm-usage --disable-gpu --remote-debugging-port=9222]
 		@browser.goto("https://medium.com/tag/"+tag)
 		sleep(2)
 		Sess.find_by_variable("start_time").update_attribute(:value, Time.now.to_i.to_s)
