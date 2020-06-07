@@ -42,7 +42,7 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'watir', '~> 6.0'
 gem 'nokogiri', '~> 1.10.9'
-gem 'bootstrap', '~> 4.0.0'
+gem 'bootstrap', '~> 4.3.1'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
