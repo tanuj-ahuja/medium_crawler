@@ -87,6 +87,7 @@ GEM
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     pg (0.20.0)
+    phantomjs (2.1.1.0)
     popper_js (1.16.0)
     puma (3.12.6)
     rack (2.2.2)
@@ -181,6 +182,7 @@ DEPENDENCIES
   listen (~> 3.0.5)
   nokogiri (~> 1.10.9)
   pg (~> 0.20.0)
+  phantomjs
   puma (~> 3.0)
   rails (~> 5.0.7, >= 5.0.7.2)
   sass-rails (~> 5.0)
