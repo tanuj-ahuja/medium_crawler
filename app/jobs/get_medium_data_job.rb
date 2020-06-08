@@ -2,12 +2,9 @@ class GetMediumDataJob < ApplicationJob
   	queue_as :default
 
   	# get the chromedriver for development
-	# chromedriver_path = File.join(File.absolute_path('../..', File.dirname(__FILE__)),"chromedriver")
-	# Selenium::WebDriver::Chrome.driver_path = chromedriver_path
-	# our browser variable
-	# @browser = nil
-	# time to crawl
-	# @@time_taken_to_crawl = 0
+	chromedriver_path = File.join(File.absolute_path('../..', File.dirname(__FILE__)),"chromedriver")
+	Selenium::WebDriver::Chrome.driver_path = chromedriver_path
+	
 
 	def perform(tag, type)
 	# Do something later 1
@@ -19,10 +16,6 @@ class GetMediumDataJob < ApplicationJob
 		Sess.find_by_variable("start_time").update_attribute(:value, Time.now.to_i.to_s)
 
 		if type == "create"
-			# if @@browser==nil
-			# 	@@browser=Watir::Browser.new :chrome
-			# end
-
 			
 			crawl count, last_inserted
 		
@@ -38,7 +31,7 @@ class GetMediumDataJob < ApplicationJob
 				end
 				prev=@browser.divs(:class => "cardChromeless u-marginTop20 u-paddingTop10 u-paddingBottom15 u-paddingLeft20 u-paddingRight20").length
 				@browser.send_keys :control, :end
-				sleep(2)
+				sleep(5)
 			end
 			# session variable to store the number of articles inserted during latest crawl
 			Sess.find_by_variable("last_inserted").update_attribute(:value, "0")
@@ -54,9 +47,7 @@ class GetMediumDataJob < ApplicationJob
 	# logic to crawl the data
 	def crawl(count, last_inserted)
 		@divs = @browser.divs(:class => "cardChromeless u-marginTop20 u-paddingTop10 u-paddingBottom15 u-paddingLeft20 u-paddingRight20")
-		# if @divs.length<=count
-		# 	return
-		# end
+		
 		loop_var=count
 		len=@divs.length
 		@divs[loop_var..loop_var+len].each do |a|
